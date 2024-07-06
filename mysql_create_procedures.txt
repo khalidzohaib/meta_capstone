@@ -1,0 +1,61 @@
+-- Procedure: GetMaxQuantity
+DELIMITER //
+
+CREATE PROCEDURE GetMaxQuantity()
+BEGIN
+    SELECT MAX(Quantity) AS MaxQuantity FROM OrderDetails;
+END //
+
+DELIMITER ;
+
+-- Procedure: ManageBooking
+DELIMITER //
+
+CREATE PROCEDURE ManageBooking(IN orderID INT, IN deliveryDate DATE)
+BEGIN
+    UPDATE Orders SET DeliveryDate = deliveryDate WHERE OrderID = orderID;
+    SELECT CONCAT('Order ', orderID, ' updated with new delivery date: ', deliveryDate) AS Message;
+END //
+
+DELIMITER ;
+
+-- Procedure: UpdateBooking
+DELIMITER //
+
+CREATE PROCEDURE UpdateBooking(IN orderID INT, IN customerID INT, IN orderDate DATE, IN deliveryDate DATE)
+BEGIN
+    UPDATE Orders
+    SET CustomerID = customerID,
+        OrderDate = orderDate,
+        DeliveryDate = deliveryDate
+    WHERE OrderID = orderID;
+    
+    SELECT CONCAT('Order ', orderID, ' updated successfully.') AS Message;
+END //
+
+DELIMITER ;
+
+-- Procedure: AddBooking
+DELIMITER //
+
+CREATE PROCEDURE AddBooking(IN orderID INT, IN orderDate DATE, IN deliveryDate DATE, IN customerID INT)
+BEGIN
+    INSERT INTO Orders (OrderID, OrderDate, DeliveryDate, CustomerID)
+    VALUES (orderID, orderDate, deliveryDate, customerID);
+    
+    SELECT CONCAT('Order ', orderID, ' added successfully.') AS Message;
+END //
+
+DELIMITER ;
+
+-- Procedure: CancelBooking
+DELIMITER //
+
+CREATE PROCEDURE CancelBooking(IN orderID INT)
+BEGIN
+    DELETE FROM Orders WHERE OrderID = orderID;
+    
+    SELECT CONCAT('Order ', orderID, ' canceled successfully.') AS Message;
+END //
+
+DELIMITER ;

@@ -1,0 +1,125 @@
+-- MySQL Workbench Forward Engineering
+
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
+
+-- -----------------------------------------------------
+-- Schema mydb
+-- -----------------------------------------------------
+-- -----------------------------------------------------
+-- Schema meta_capstone
+-- -----------------------------------------------------
+DROP SCHEMA IF EXISTS `meta_capstone` ;
+
+-- -----------------------------------------------------
+-- Schema meta_capstone
+-- -----------------------------------------------------
+CREATE SCHEMA IF NOT EXISTS `meta_capstone` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci ;
+USE `meta_capstone` ;
+
+-- -----------------------------------------------------
+-- Table `meta_capstone`.`customers`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `meta_capstone`.`customers` ;
+
+CREATE TABLE IF NOT EXISTS `meta_capstone`.`customers` (
+  `CustomerID` INT NOT NULL,
+  `CustomerName` VARCHAR(255) NULL DEFAULT NULL,
+  `City` VARCHAR(100) NULL DEFAULT NULL,
+  `Country` VARCHAR(100) NULL DEFAULT NULL,
+  `PostalCode` VARCHAR(20) NULL DEFAULT NULL,
+  PRIMARY KEY (`CustomerID`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
+-- Table `meta_capstone`.`orders`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `meta_capstone`.`orders` ;
+
+CREATE TABLE IF NOT EXISTS `meta_capstone`.`orders` (
+  `OrderID` INT NOT NULL,
+  `OrderDate` DATE NULL DEFAULT NULL,
+  `DeliveryDate` DATE NULL DEFAULT NULL,
+  `CustomerID` INT NULL DEFAULT NULL,
+  PRIMARY KEY (`OrderID`),
+  INDEX `CustomerID` (`CustomerID` ASC) VISIBLE,
+  CONSTRAINT `orders_ibfk_1`
+    FOREIGN KEY (`CustomerID`)
+    REFERENCES `meta_capstone`.`customers` (`CustomerID`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
+-- Table `meta_capstone`.`delivery`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `meta_capstone`.`delivery` ;
+
+CREATE TABLE IF NOT EXISTS `meta_capstone`.`delivery` (
+  `DeliveryID` INT NOT NULL,
+  `OrderID` INT NULL DEFAULT NULL,
+  `DeliveryCost` DECIMAL(10,2) NULL DEFAULT NULL,
+  PRIMARY KEY (`DeliveryID`),
+  INDEX `OrderID` (`OrderID` ASC) VISIBLE,
+  CONSTRAINT `delivery_ibfk_1`
+    FOREIGN KEY (`OrderID`)
+    REFERENCES `meta_capstone`.`orders` (`OrderID`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
+-- Table `meta_capstone`.`products`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `meta_capstone`.`products` ;
+
+CREATE TABLE IF NOT EXISTS `meta_capstone`.`products` (
+  `ProductID` INT NOT NULL,
+  `CourseName` VARCHAR(255) NULL DEFAULT NULL,
+  `CuisineName` VARCHAR(255) NULL DEFAULT NULL,
+  `StarterName` VARCHAR(255) NULL DEFAULT NULL,
+  `DessertName` VARCHAR(255) NULL DEFAULT NULL,
+  `Drink` VARCHAR(100) NULL DEFAULT NULL,
+  `Sides` VARCHAR(255) NULL DEFAULT NULL,
+  PRIMARY KEY (`ProductID`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
+-- Table `meta_capstone`.`orderdetails`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `meta_capstone`.`orderdetails` ;
+
+CREATE TABLE IF NOT EXISTS `meta_capstone`.`orderdetails` (
+  `OrderDetailID` INT NOT NULL,
+  `OrderID` INT NULL DEFAULT NULL,
+  `ProductID` INT NULL DEFAULT NULL,
+  `Quantity` INT NULL DEFAULT NULL,
+  `Discount` DECIMAL(5,2) NULL DEFAULT NULL,
+  `Cost` DECIMAL(10,2) NULL DEFAULT NULL,
+  `Sales` DECIMAL(10,2) NULL DEFAULT NULL,
+  PRIMARY KEY (`OrderDetailID`),
+  INDEX `OrderID` (`OrderID` ASC) VISIBLE,
+  INDEX `ProductID` (`ProductID` ASC) VISIBLE,
+  CONSTRAINT `orderdetails_ibfk_1`
+    FOREIGN KEY (`OrderID`)
+    REFERENCES `meta_capstone`.`orders` (`OrderID`),
+  CONSTRAINT `orderdetails_ibfk_2`
+    FOREIGN KEY (`ProductID`)
+    REFERENCES `meta_capstone`.`products` (`ProductID`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
